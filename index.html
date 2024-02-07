@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      #game-container {
+        position: relative;
+        width: 1600px;
+        height: 800px;
+        border: 1px solid #000;
+      }
+
+      #airplane {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background-image: url(assets/pixilart-drawing.png);
+        background-size: cover;
+        top: 50%;
+        left: 50px;
+        transform: translateY(-50%);
+      }
+
+      .meteor {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background-image: url(assets/pixil-frame-0.png);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <div id="airplane"></div>
+    </div>
+
+    <script>
+      const airplane = document.getElementById("airplane");
+      let airplaneX = 50;
+      let airplaneY = 50;
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowDown" && airplaneY < 800) {
+          airplaneY += 10;
+        } else if (event.key === "ArrowUp" && airplaneY > 0) {
+          airplaneY -= 10;
+        }
+
+        airplane.style.top = airplaneY + "px";
+      });
+
+      function createMeteor() {
+        const meteor = document.createElement("div");
+        meteor.className = "meteor";
+        meteor.style.left = "1500px";
+        meteor.style.top = Math.floor(Math.random() * 800) + "px";
+        document.getElementById("game-container").appendChild(meteor);
+
+        const moveMeteor = setInterval(function () {
+          const meteorLeft = parseInt(meteor.style.left);
+          const meteorTop = parseInt(meteor.style.top);
+
+          if (meteorLeft > 0) {
+            meteor.style.left = meteorLeft - 5 + "px";
+
+            if (
+              airplaneX < meteorLeft + 30 &&
+              airplaneX + 50 > meteorLeft &&
+              airplaneY < meteorTop + 30 &&
+              airplaneY + 30 > meteorTop
+            ) {
+              clearInterval(moveMeteor);
+              alert("Гра закінчена! Ваш літак зіткнувся з метеоритом.");
+            }
+          } else {
+            meteor.remove();
+            clearInterval(moveMeteor);
+          }
+        }, 50);
+      }
+
+      setInterval(createMeteor, 3000);
+    </script>
+  </body>
+</html>
